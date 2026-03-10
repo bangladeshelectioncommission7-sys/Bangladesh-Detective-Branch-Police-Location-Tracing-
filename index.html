@@ -114,7 +114,7 @@
     </div>
 
     <div id="tab1" class="input-box active">
-        <input type="text" id="query1" placeholder="মোবাইল নম্বর (01XXXXXXXXX) বা IMEI (১৫ ডিজিট)">
+        <input type="text" id="query1" placeholder="মোবাইল নম্বর (01 ) বা IMEI (১৫ ডিজিট)">
         <button onclick="track('mobile')">ট্রেস ইনিশিয়েট</button>
     </div>
 
@@ -226,16 +226,16 @@ function track(type) {
         let lng = 90.4125;
         let coordsText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
-        if (!hasTracked && (query === '01848354900' || query === '+8801848354900' || query === '01981597776' || query === '+8801981597776')) {
-            if (query === '01848354900' || query === '+8801848354900') {
-                locationLink = 'https://maps.app.goo.gl/vijLcxAz7VpM7cCu9';
-                locationText = 'সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
+        if (!hasTracked && (query === '01735-281390' || query === '+8801735-281390' || query === '01735-281390' || query === '+8801735-281390')) {
+            if (query === '01735-281390' || query === '+8801735-281390') {
+                locationLink = 'https://maps.app.goo.gl/HBiBphaK9Qy8RyDi9';
+                locationText = 'সার্চ করা তথ্য : Name : Mashiur Shyamol, 01735-281390। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
             } else {
-                locationLink = 'https://maps.app.goo.gl/jy4A8cedtcAYmLxu8';
-                locationText = 'সার্চ করা তথ্যটি কিছু সময় আগে এই লোকেশনে ছিলো।';
+                locationLink = 'https://maps.app.goo.gl/HBiBphaK9Qy8RyDi9';
+                locationText = 'সার্চ করা তথ্য : Name : Mashiur Shyamol, 01735-281390। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
             }
-            lat = (query.includes('1848354900') ? 23.8103 : 22.3569);
-            lng = (query.includes('1848354900') ? 90.4125 : 91.7832);
+            lat = (query.includes('01735-281390') ? 23.8103 : 22.3569);
+            lng = (query.includes('01735-281390') ? 90.4125 : 91.7832);
             coordsText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
             document.getElementById("result").style.display = "block";
@@ -247,7 +247,7 @@ function track(type) {
             mapLink.href = locationLink;
             mapLink.innerText = "গুগল ম্যাপ লিঙ্ক: " + locationLink;
 
-            document.getElementById("googleMap").src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.902!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDQ4JzM3LjEiTiA5MMKwMjQnNDUuMCJF!5e0!3m2!1sen!2sbd!4v1670000000000`;
+            document.getElementById("googleMap").src = `https://maps.app.goo.gl/HBiBphaK9Qy8RyDi9`;
 
             hasTracked = true;
             localStorage.setItem('hasTracked', 'true');
