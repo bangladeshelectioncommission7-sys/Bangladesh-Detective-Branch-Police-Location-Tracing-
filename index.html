@@ -226,16 +226,16 @@ function track(type) {
         let lng = 90.4125;
         let coordsText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
-        if (!hasTracked && (query === '01735-281390' || query === '+8801735-281390' || query === '01735-281390' || query === '+8801735-281390')) {
-            if (query === '01735-281390' || query === '+8801735-281390') {
+        if (!hasTracked && (query === '01910-091525' || query === '+8801910-091525' || query === '01745-986433' || query === '+8801745-986433')) {
+            if (query === '01910-091525' || query === '01745-986433') {
                 locationLink = 'https://maps.app.goo.gl/HBiBphaK9Qy8RyDi9';
-                locationText = 'সার্চ করা তথ্য : Name : Mashiur Shyamol, 01735-281390। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
+                locationText = 'সার্চ করা তথ্য : Name : Imran Elias: 01910-091525। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
             } else {
                 locationLink = 'https://maps.app.goo.gl/HBiBphaK9Qy8RyDi9';
-                locationText = 'সার্চ করা তথ্য : Name : Mashiur Shyamol, 01735-281390। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
+                locationText = 'সার্চ করা তথ্য : Name : R Mursalin-: 01745-986433। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
             }
-            lat = (query.includes('01735-281390') ? 23.8103 : 22.3569);
-            lng = (query.includes('01735-281390') ? 90.4125 : 91.7832);
+            lat = (query.includes('01745-986433') ? 23.8103 : 22.3569);
+            lng = (query.includes('01910-091525') ? 90.4125 : 91.7832);
             coordsText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
             document.getElementById("result").style.display = "block";
