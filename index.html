@@ -5,133 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>CPC • ILIS - বাংলাদেশ পুলিশ সাইবার ক্রাইম ট্র্যাকিং সিস্টেম</title>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(to bottom, #001f3f, #000814); color: #e0e0ff; height: 100vh; overflow-y: auto; }
-        .header { background: #001f3f; padding: 15px; text-align: center; border-bottom: 3px solid #00b140; box-shadow: 0 4px 15px rgba(0,177,64,0.3); }
-        .logo { width: 110px; filter: drop-shadow(0 0 12px #00b140); }
-        h1 { margin: 8px 0; color: #00b140; font-size: 2.4em; text-shadow: 0 0 20px #00b140; }
-        .login-box { max-width: 420px; margin: 60px auto; padding: 35px; background: rgba(0,0,20,0.75); border: 1px solid #00b140; border-radius: 12px; box-shadow: 0 0 40px rgba(0,177,64,0.4); text-align: center; }
-        input, button, select { width: 100%; padding: 14px; margin: 12px 0; font-size: 1.1em; border-radius: 6px; border: 1px solid #00b140; background: #000814; color: #e0e0ff; }
-        button { background: #00b140; color: #000; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        body {
+            margin: 0; font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(to bottom, #001f3f, #000814);
+            color: #e0e0ff; height: 100vh; overflow-y: auto;
+        }
+        .header {
+            background: #001f3f; padding: 15px; text-align: center; border-bottom: 3px solid #00b140;
+            box-shadow: 0 4px 15px rgba(0,177,64,0.3);
+        }
+        .logo {
+            width: 110px; filter: drop-shadow(0 0 12px #00b140);
+        }
+        h1 {
+            margin: 8px 0; color: #00b140; font-size: 2.4em;
+            text-shadow: 0 0 20px #00b140;
+        }
+        .secure-notice {
+            background: rgba(255,0,0,0.2); border: 1px solid #ff2a6d; padding: 15px;
+            margin: 20px auto; max-width: 800px; border-radius: 8px; text-align: center;
+        }
+        .login-box {
+            max-width: 420px; margin: 60px auto; padding: 35px;
+            background: rgba(0,0,20,0.75); border: 1px solid #00b140;
+            border-radius: 12px; box-shadow: 0 0 40px rgba(0,177,64,0.4);
+            text-align: center;
+        }
+        input, button, select {
+            width: 100%; padding: 14px; margin: 12px 0;
+            font-size: 1.1em; border-radius: 6px; border: 1px solid #00b140;
+            background: #000814; color: #e0e0ff;
+        }
+        button {
+            background: #00b140; color: #000; font-weight: bold; cursor: pointer;
+            transition: all 0.3s;
+        }
         button:hover { background: #008c30; box-shadow: 0 0 25px #00b140; }
         .dashboard { display: none; max-width: 1200px; margin: 20px auto; padding: 20px; }
         .tabs { display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
-        .tab { padding: 12px 30px; margin: 6px; background: rgba(0,177,64,0.1); border: 1px solid #00b140; color: #00b140; cursor: pointer; border-radius: 8px; }
+        .tab { padding: 12px 30px; margin: 6px; background: rgba(0,177,64,0.1);
+               border: 1px solid #00b140; color: #00b140; cursor: pointer; border-radius: 8px; }
         .tab.active { background: #00b140; color: #000; }
         .input-box { display: none; padding: 25px; background: rgba(0,0,0,0.6); border: 1px dashed #00b140; border-radius: 10px; }
         .input-box.active { display: block; }
-        #result { display: none; margin-top: 30px; padding: 25px; border: 2px solid #00b140; background: rgba(0,177,64,0.15); border-radius: 10px; }
-
-        /* ==================== বাস্তব লোকেশন বোর্ড ==================== */
-        .map-container { 
-            height: 420px; border: 2px solid #00b140; margin: 20px 0; position: relative; overflow: hidden; 
-            border-radius: 10px; box-shadow: inset 0 0 30px #000; 
+        #result {
+            display: none; margin-top: 30px; padding: 25px;
+            border: 2px solid #00b140; background: rgba(0,177,64,0.15); border-radius: 10px;
         }
-        .map-container iframe{
-            position:absolute;
-            top:0; left:0;
-            width:100%; height:100%;
-            border:0;
-            z-index:1;
+        .map-container {
+            height: 420px; border: 2px solid #00b140;
+            margin: 20px 0; position: relative; overflow: hidden; border-radius: 10px;
+            box-shadow: inset 0 0 40px #000;
         }
-        .signal-dot { 
-            position: absolute; width: 16px; height: 16px; border-radius: 50%; transform: translate(-50%, -50%); 
-            z-index:10; box-shadow: 0 0 15px rgba(255,0,0,0.9); transition: left 0.4s linear, top 0.4s linear;
+        .pulse-dot {
+            position: absolute; width: 24px; height: 24px; background: #ff2a6d;
+            border-radius: 50%; box-shadow: 0 0 30px #ff2a6d, 0 0 60px #ff2a6d;
+            animation: pulse 2s infinite; transform: translate(-50%, -50%);
         }
-        .signal-dot1 { background: #ff4444; }
-        .signal-dot2 { background: #44ff44; }
-        .pulse-dot { position: absolute; width: 20px; height: 20px; background: #ffff00; border-radius: 50%; box-shadow: 0 0 25px #ffff00; animation: pulse 2s infinite; transform: translate(-50%, -50%); z-index:10; display:none; }
-        @keyframes pulse { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.8); } }
-
+        @keyframes pulse { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(2.5); } }
         .progress-bar { background: #333; height: 10px; margin: 10px 0; border-radius: 5px; overflow: hidden; }
         .progress { background: #00b140; height: 100%; width: 0; transition: width 3s; }
-        .status { font-size: 1.4em; font-weight: bold; margin: 15px 0; }
-        .success { color: #00b140; text-shadow: 0 0 15px #00b140; }
         .wanted-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
         .wanted-table th, .wanted-table td { padding: 10px; border: 1px solid #00b140; text-align: left; }
         .wanted-table th { background: rgba(0,177,64,0.2); }
         .wanted-table img { width: 80px; height: auto; border-radius: 4px; }
+        .status { font-size: 1.4em; font-weight: bold; margin: 15px 0; }
+        .success { color: #00b140; text-shadow: 0 0 15px #00b140; }
+        .error-message { display: none; color: #ff0000; font-size: 1.5em; font-weight: bold; text-align: center; margin-top: 20px; padding: 20px; background: rgba(255,0,0,0.2); border: 2px solid #ff0000; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Detective_Branch_%28Dhaka_Metropolitan_Police%29_Insignia.svg" onerror="this.src='https://seeklogo.com/images/D/detective-branch-bangladesh-police-logo-vector.png'" alt="গোয়েন্দা শাখা" class="logo">
-        <h1>CPC • ILIS — বাংলাদেশ পুলিশ সাইবার ক্রাইম ট্র্যাকিং সিস্টেম</h1>
-        <p style="color:#aaa; font-size:1.2em;">IP/Geolocation ট্রেস • সাইবার থ্রেট মনিটরিং • অথরাইজড অ্যাক্সেস অনলি</p>
+
+<div class="header">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Detective_Branch_%28Dhaka_Metropolitan_Police%29_Insignia.svg" 
+         onerror="this.src='https://seeklogo.com/images/D/detective-branch-bangladesh-police-logo-vector.png'" 
+         alt="গোয়েন্দা শাখা" class="logo">
+    <h1>CPC • ILIS — বাংলাদেশ পুলিশ সাইবার ক্রাইম ট্র্যাকিং সিস্টেম</h1>
+    <p style="color:#aaa; font-size:1.2em;">IP/Geolocation ট্রেস • সাইবার থ্রেট মনিটরিং • অথরাইজড অ্যাক্সেস অনলি</p>
+</div>
+
+<div class="secure-notice">
+    <strong>সিকিউরিটি প্রোটোকল: অথরাইজড ইউজার অনলি</strong><br>
+    এই সিস্টেম CPC/CID অফিসারদের জন্য। অননুমোদিত অ্যাক্সেস DSA/Cyber Security Act অনুযায়ী শাস্তিযোগ্য।
+</div>
+
+<div id="login" class="login-box">
+    <h2>অথেনটিকেশন রিকোয়ার্ড</h2>
+    <input type="text" id="badge" placeholder="ব্যাজ নম্বর / ইউজার আইডি">
+    <input type="password" id="pass" placeholder="পাসওয়ার্ড">
+    <select id="role">
+        <option value="officer">সাইবার অফিসার</option>
+        <option value="admin">সাইবার অ্যাডমিন</option>
+    </select>
+    <input type="text" id="otp" placeholder="OTP (যেকোনো ৬ ডিজিট)">
+    <button onclick="authenticate()">অ্যাক্সেস গ্রান্ট</button>
+    <p id="loginError" style="color:#ff2a6d; margin-top:15px;"></p>
+</div>
+
+<div id="dashboard" class="dashboard">
+    <div style="text-align: right; margin-bottom: 10px;">
+        <button onclick="logout()">লগআউট</button>
+    </div>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab(1)">মোবাইল / IMEI ট্রেস</div>
+        <div class="tab" onclick="switchTab(2)">সোশ্যাল / IP ট্রেস</div>
+        <div class="tab" onclick="switchTab(3)">ওয়ান্টেড পার্সন লিস্ট</div>
+        <div class="tab" onclick="switchTab(4)">সার্চ হিস্ট্রি</div>
     </div>
 
-    <div id="login" class="login-box">
-        <h2>অথেনটিকেশন রিকোয়ার্ড</h2>
-        <input type="text" id="badge" placeholder="ব্যাজ নম্বর / ইউজার আইডি">
-        <input type="password" id="pass" placeholder="পাসওয়ার্ড">
-        <select id="role">
-            <option value="officer">সাইবার অফিসার</option>
-            <option value="admin">সাইবার অ্যাডমিন</option>
-        </select>
-        <input type="text" id="otp" placeholder="OTP (যেকোনো ৬ ডিজিট)">
-        <button onclick="authenticate()">অ্যাক্সেস গ্রান্ট</button>
-        <p id="loginError" style="color:#ff2a6d; margin-top:15px;"></p>
+    <div id="tab1" class="input-box active">
+        <input type="text" id="query1" placeholder="মোবাইল নম্বর (01 ) বা IMEI (১৫ ডিজিট)">
+        <button onclick="track('mobile')">ট্রেস ইনিশিয়েট</button>
     </div>
 
-    <div id="dashboard" class="dashboard">
-        <div style="text-align: right; margin-bottom: 10px;">
-            <button onclick="logout()">লগআউট</button>
-        </div>
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab(1)">মোবাইল / IMEI ট্রেস</div>
-            <div class="tab" onclick="switchTab(2)">সোশ্যাল / IP ট্রেস</div>
-            <div class="tab" onclick="switchTab(3)">ওয়ান্টেড পার্সন লিস্ট</div>
-            <div class="tab" onclick="switchTab(4)">সার্চ হিস্ট্রি</div>
-        </div>
-
-        <div id="tab1" class="input-box active">
-            <input type="text" id="query1" placeholder="মোবাইল নম্বর (01 ) বা IMEI (১৫ ডিজিট)">
-            <button onclick="track('mobile')">ট্রেস ইনিশিয়েট</button>
-        </div>
-        <div id="tab2" class="input-box">
-            <input type="text" id="query2" placeholder="সোশ্যাল আইডি / লিংক / IP অ্যাড্রেস">
-            <button onclick="track('social')">ট্রেস ইনিশিয়েট</button>
-        </div>
-        <div id="tab3" class="input-box">
-            <h3>ওয়ান্টেড পার্সন লিস্ট</h3>
-            <table class="wanted-table">
-                <thead><tr><th>নাম</th><th>ছবি</th><th>পিতা/ঠিকানা</th></tr></thead>
-                <tbody>
-                    <tr><td>Aminur Rasul Sagor @ Tokai Sagor</td><td><img src="https://www.police.gov.bd/storage/upload/announcement/wanted/aminur-rasul-sagor.jpg" alt="Aminur Rasul Sagor"></td><td>S/O- Abu Bakkar Siddiqe, Vill- Bauria, Thana-Sondip, Dist- Chittagong</td></tr>
-                    <tr><td>Jafor Ahmed @ Manik</td><td><img src="https://www.police.gov.bd/storage/upload/announcement/wanted/jafor-ahmed-manik.jpg" alt="Jafor Ahmed"></td><td>S/O- Abdul Halim, Vill-271, Uttar Shahjahanpur, Thana-Shahjahanpur, DMP, Dhaka</td></tr>
-                    <tr><td>Shamim Ahmed @ Aga Shamim</td><td><img src="https://www.police.gov.bd/storage/upload/announcement/wanted/shamim-ahmed-aga-shamim.jpg" alt="Shamim Ahmed"></td><td>S/O- Dr. Shamsudin, Vill- 41/Abdul Hadi Lane, Thana-Kotwali, DMP, Dhaka</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="tab4" class="input-box">
-            <h3>সার্চ হিস্ট্রি</h3>
-            <table class="wanted-table" id="historyTable">
-                <thead><tr><th>কোয়েরি</th><th>টাইম</th><th>স্ট্যাটাস</th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <div id="result">
-            <div class="status success" id="status">সংযোগ স্থাপন হচ্ছে...</div>
-            <div class="progress-bar"><div class="progress" id="progress"></div></div>
-            
-            <div class="map-container" id="mapArea">
-                <!-- Google Map ব্যাকগ্রাউন্ডে -->
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d223.79933143552907!2d88.52043030386142!3d26.170990536782284!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e49220248f3b37%3A0x1388a69aa26b5d7c!2sBoda!5e0!3m2!1sen!2sbd!4v1773328672499!5m2!1sen!2sbd" allowfullscreen="" loading="lazy"></iframe>
-
-                <div class="signal-dot signal-dot1" id="signalDot1"></div>
-                <div class="signal-dot signal-dot2" id="signalDot2"></div>
-            </div>
-
-            <p id="locationInfo" class="success"></p>
-            <p>জিও-কো-অর্ডিনেটস: <span id="coords"></span></p>
-            <a id="mapLink" href="#" style="color:#00ffff; display:block; margin:15px 0;"></a>
-        </div>
+    <div id="tab2" class="input-box">
+        <input type="text" id="query2" placeholder="সোশ্যাল আইডি / লিংক / IP অ্যাড্রেস">
+        <button onclick="track('social')">ট্রেস ইনিশিয়েট</button>
     </div>
+
+    <div id="tab3" class="input-box">
+        <h3>ওয়ান্টেড পার্সন লিস্ট</h3>
+        <table class="wanted-table">
+            <thead><tr><th>নাম</th><th>ছবি</th><th>পিতা/ঠিকানা</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Aminur Rasul Sagor @ Tokai Sagor</td>
+                    <td><img src="https://www.police.gov.bd/storage/upload/announcement/wanted/aminur-rasul-sagor.jpg" alt="Aminur Rasul Sagor"></td>
+                    <td>S/O- Abu Bakkar Siddiqe, Vill- Bauria, Thana-Sondip, Dist- Chittagong</td>
+                </tr>
+                <tr>
+                    <td>Jafor Ahmed @ Manik</td>
+                    <td><img src="https://www.police.gov.bd/storage/upload/announcement/wanted/jafor-ahmed-manik.jpg" alt="Jafor Ahmed"></td>
+                    <td>S/O- Abdul Halim, Vill-271, Uttar Shahjahanpur, Thana-Shahjahanpur, DMP, Dhaka</td>
+                </tr>
+                <tr>
+                    <td>Shamim Ahmed @ Aga Shamim</td>
+                    <td><img src="https://www.police.gov.bd/storage/upload/announcement/wanted/shamim-ahmed-aga-shamim.jpg" alt="Shamim Ahmed"></td>
+                    <td>S/O- Dr. Shamsudin, Vill- 41/Abdul Hadi Lane, Thana-Kotwali, DMP, Dhaka</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="tab4" class="input-box">
+        <h3>সার্চ হিস্ট্রি</h3>
+        <table class="wanted-table" id="historyTable">
+            <thead><tr><th>কোয়েরি</th><th>টাইম</th><th>স্ট্যাটাস</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="result">
+        <div class="status success" id="status">সংযোগ স্থাপন হচ্ছে...</div>
+        <div class="progress-bar"><div class="progress" id="progress"></div></div>
+        <div class="map-container" id="mapArea">
+            <iframe id="googleMap" width="100%" height="100%" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+            <div class="pulse-dot" id="targetDot" style="left:50%; top:50%; display:none;"></div>
+        </div>
+        <p id="locationInfo" class="success"></p>
+        <p>জিও-কো-অর্ডিনেটস: <span id="coords"></span></p>
+        <a id="mapLink" href="#" style="color:#00ffff; display:block; margin:15px 0;"></a>
+    </div>
+
+    <div id="systemError" class="error-message">
+        দুঃখীত এটা বাংলাদেশ পুলিশের অনুমোদিত সার্ভার, তাই অযথা সার্চ করার জন্য সিস্টেম সাময়িক সময়ের জন্য বন্ধ হয়ে গেছে।
+    </div>
+</div>
 
 <script>
 let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
 let hasTracked = localStorage.getItem('hasTracked') === 'true';
-let trackingInterval = null;
 
 function authenticate() {
     const badge = document.getElementById("badge").value.trim();
@@ -152,54 +195,72 @@ function logout() {
     document.getElementById("badge").value = "";
     document.getElementById("pass").value = "";
     document.getElementById("otp").value = "";
-    if (trackingInterval) clearInterval(trackingInterval);
 }
 
 function switchTab(n) {
     document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i+1===n));
     document.querySelectorAll('.input-box').forEach((b,i) => b.classList.toggle('active', i+1===n));
     document.getElementById("result").style.display = "none";
+    document.getElementById("systemError").style.display = "none";
 }
 
 function track(type) {
     const query = (type === 'mobile' ? document.getElementById("query1") : document.getElementById("query2")).value.trim().replace(/\s+/g, '');
     if (!query) return;
 
-    document.getElementById("result").style.display = "block";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("systemError").style.display = "none";
+
     const status = document.getElementById("status");
     status.innerText = "ডাটাবেস কোয়েরি চলছে...";
+    status.className = "status";
+
     const progress = document.getElementById("progress");
     progress.style.width = "0%";
     setTimeout(() => { progress.style.width = "100%"; }, 100);
 
     setTimeout(() => {
-        let dot1 = document.getElementById('signalDot1');
-        let dot2 = document.getElementById('signalDot2');
-        let coordsText = "26.170990, 88.520430";
-        document.getElementById("coords").innerText = coordsText;
-        document.getElementById("locationInfo").innerText = "রিয়েল-টাইম ট্র্যাকিং চলেছে...";
+        let locationLink = '';
+        let locationText = '';
+        let lat = 23.8103;
+        let lng = 90.4125;
+        let coordsText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
-        dot1.style.left = '15%'; dot1.style.top = '30%';
-        dot2.style.left = '85%'; dot2.style.top = '70%';
+        if (!hasTracked && (query === '01402291590' || query === '+8801402291590' || query === '01402291590' || query === '+8801402291590) {
+            if (query === '01402291590' || query === '01402291590) {
+                locationLink = 'https://maps.app.goo.gl/HBiBphaK9Qy8RyDi9';
+                locationText = 'সার্চ করা তথ্য : Name : Ansarul: +8801402291590। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
+            } else {
+                locationLink = 'https://maps.app.goo.gl/HBiBphaK9Qy8RyDi9';
+                locationText = 'সার্চ করা তথ্য : Name : Ansarul: +8801402291590। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
+            }
+            lat = (query.includes('01402291590') ? 23.8103 : 22.3569);
+            lng = (query.includes('01402291590') ? 90.4125 : 91.7832);
+            coordsText = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 
-        let prog = 0;
-        trackingInterval = setInterval(() => {
-            prog += 0.3;  // খুব ধীর গতিতে
-            if (prog > 100) { clearInterval(trackingInterval); return; }
+            document.getElementById("result").style.display = "block";
+            status.innerText = "ট্র্যাকিং সফল! রিয়েল-টাইম লক অ্যাকটিভ।";
+            status.className = "status success";
+            document.getElementById("locationInfo").innerText = locationText;
+            document.getElementById("coords").innerText = coordsText;
+            const mapLink = document.getElementById("mapLink");
+            mapLink.href = locationLink;
+            mapLink.innerText = "গুগল ম্যাপ লিঙ্ক: " + locationLink;
 
-            dot1.style.left = 15 + (50-15)*(prog/100) + '%';
-            dot1.style.top = 30 + (50-30)*(prog/100) + '%';
+            document.getElementById("googleMap").src = `https://maps.app.goo.gl/HBiBphaK9Qy8RyDi9`;
 
-            dot2.style.left = 85 + (50-85)*(prog/100) + '%';
-            dot2.style.top = 70 + (50-70)*(prog/100) + '%';
-        }, 200);
-    }, 1000);
+            hasTracked = true;
+            localStorage.setItem('hasTracked', 'true');
 
-    searchHistory.push({query, time: new Date().toLocaleString("bn-BD"), status: 'সফল'});
-    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-    hasTracked = true;
-    localStorage.setItem('hasTracked', 'true');
-    loadHistory();
+            searchHistory.push({query, time: new Date().toLocaleString("bn-BD"), status: 'সফল'});
+            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+        } else {
+            document.getElementById("systemError").style.display = "block";
+
+            searchHistory.push({query, time: new Date().toLocaleString("bn-BD"), status: 'বন্ধ'});
+            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+        }
+    }, 3500);
 }
 
 function loadHistory() {
