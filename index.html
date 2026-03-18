@@ -79,17 +79,13 @@
             <button onclick="track('social')">ট্রেস ইনিশিয়েট</button>
         </div>
 
-        <!-- ওয়ান্টেড + হিস্ট্রি টেবিল (আগের মতোই) -->
-
         <div id="result">
             <div class="status success" id="status">সংযোগ স্থাপন হচ্ছে...</div>
             <div class="progress-bar"><div class="progress" id="progress"></div></div>
             
             <div class="map-container" id="mapArea">
-                <!-- সঠিক embed (black screen ফিক্স) -->
                 <iframe id="googleMap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3689.5!2d91.781011!3d23.8103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3754b7a!2s!5e0!3m2!1sbn!2sbd!4v1690000000000" width="100%" height="100%" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                 <div class="pulse-dot" id="targetDot" style="left:50%; top:50%; display:none;"></div>
-                <!-- শুধু একটা ডট -->
                 <div class="signal-dot" id="signalDot" style="left:10%; top:40%;"></div>
                 <svg class="trail" id="trailSVG"></svg>
             </div>
@@ -100,7 +96,6 @@
         </div>
     </div>
 
-    <!-- লাল ওয়ার্নিং মেসেজ -->
     <div id="warningMsg" class="warning-msg">
         দুঃখীত এটা বাংলাদেশ পুলিশের অনুমোদিত সার্ভার,<br>তাই অযথা সার্চ করার জন্য সিস্টেম সাময়িক সময়ের জন্য বন্ধ হয়ে গেছে।
     </div>
@@ -140,9 +135,7 @@
 
         function showWarning() {
             document.getElementById("warningMsg").style.display = "block";
-            setTimeout(() => {
-                document.getElementById("warningMsg").style.display = "none";
-            }, 10000); // ১০ সেকেন্ড পর অদৃশ্য
+            setTimeout(() => { document.getElementById("warningMsg").style.display = "none"; }, 10000);
         }
 
         function track(type) {
@@ -157,11 +150,23 @@
             setTimeout(() => { progress.style.width = "100%"; }, 100);
 
             setTimeout(() => {
-                if (query === '01910-091525' || query === '01402291590' || query.includes('01910091525') || query.includes('1402291590')) {
+                let isSuccess = false;
+                let locationText = "";
+                let coordsText = "23.810300, 91.783200";
+
+                if (query === '01910-091525' || query === '+8801910091525' || query.includes('01910091525')) {
+                    isSuccess = true;
+                    locationText = 'সার্চ করা তথ্য : Name : Imran Elias: 01910-091525। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
+                } else if (query === '01402291590' || query === '+8801402291590' || query.includes('1402291590') || query.includes('01402')) {
+                    isSuccess = true;
+                    locationText = 'সার্চ করা তথ্য : Name : Ansarul: 01402291590। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।';
+                }
+
+                if (isSuccess) {
                     document.getElementById("result").style.display = "block";
                     status.innerText = "ট্র্যাকিং সফল! রিয়েল-টাইম লক অ্যাকটিভ।";
-                    document.getElementById("locationInfo").innerText = "সার্চ করা তথ্য : Name : Imran Elias / Ansarul: 01910-091525 / 01402291590। এই সার্চ করা তথ্যটি এই লোকেশনের আয়ত্তের ভিতরেই রয়েছে।";
-                    document.getElementById("coords").innerText = "23.810300, 91.783200";
+                    document.getElementById("locationInfo").innerText = locationText;
+                    document.getElementById("coords").innerText = coordsText;
 
                     const dot = document.getElementById('signalDot');
                     const targetDot = document.getElementById('targetDot');
