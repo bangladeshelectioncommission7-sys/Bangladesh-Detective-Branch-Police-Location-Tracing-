@@ -322,7 +322,7 @@
                 otpMobile = mobile;
                 otpExpiresAt = Date.now() + (5 * 60 * 1000);
                 lastOtpRequestTime = Date.now();
-                otpMsg.innerHTML = `<span class="success">OTP সফলভাবে পাঠানো হয়েছে। (ডেমো: 123456)</span>`;
+                otpMsg.innerHTML = `<span class="success">OTP সফলভাবে পাঠানো হয়েছে।</span>`;
             } catch (error) {
                 otpMsg.innerHTML = `<span class="error">OTP পাঠাতে সমস্যা হয়েছে।</span>`;
             } finally {
