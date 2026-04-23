@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
     const apiKey = process.env.SMS_API_KEY;
 
-    const url = `https://sms.one9.one/sms/api?action=send-sms&api_key=${apiKey}&to=${mobile}&from=SMS&sms=Your OTP is ${otp}`;
+    const url = `https://sms.one9.one/sms/api?action=send-sms&api_key=${apiKey}&to=${mobile}&from=SMS&sms=মোবাইল ডাটাবেইজ পোর্টাল (BTRC সেবা): আপনার OTP কোড: Your OTP is ${otp} Otp কারো সাথে শেয়ার করবেন না।`;
 
     try {
         const response = await fetch(url);
