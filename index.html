@@ -39,7 +39,6 @@
         .spinner { width:60px; height:60px; border:7px solid #333; border-top:7px solid #00b140; border-radius:50%; animation:spin 1.2s linear infinite; margin-bottom:15px; }
         @keyframes spin { to { transform:rotate(360deg); } }
 
-        /* প্রোফাইল মোডাল */
         #profileModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; justify-content:center; align-items:center; }
     </style>
 </head>
@@ -142,15 +141,11 @@
             <div id="liveSection" class="card">
                 <h3>মোবাইল / IMEI লাইভ লোকেশন ট্র্যাকিং</h3>
                 <input type="text" id="trackInput" placeholder="মোবাইল নম্বর বা IMEI দিন">
-                <button onclick="startLiveTracking()">ট্রেস শুরু করুন</button>
-                <div id="liveResult" style="display:none; margin-top:20px;">
-                    <div class="message success">ট্র্যাকিং সফল! রিয়েল-টাইম সিগনাল অ্যাকটিভ।</div>
-                    <div class="map-container"><div class="pulse-dot" id="targetDot"></div></div>
-                    <p class="message success">বর্তমান লোকেশন সিগনাল এর আশেপাশে রয়েছে</p>
-                </div>
+                <button onclick="searchService('live')">ট্রেস শুরু করুন</button>
+                <div id="liveResult" style="display:none; margin-top:20px;"></div>
             </div>
 
-            <!-- অন্যান্য সেকশন (সবগুলোতে ব্যালেন্স চেক) -->
+            <!-- অন্যান্য সেকশন -->
             <div id="cdrSection" class="card" style="display:none;">
                 <h3>CDR ডাউনলোড</h3>
                 <input type="text" id="cdrInput" placeholder="মোবাইল নম্বর দিন">
@@ -192,7 +187,7 @@
                 </div>
             </div>
 
-            <!-- সাইবার ক্রাইম ডাটাবেস -->
+            <!-- সাইবার ক্রাইম -->
             <div id="cyberdbSection" class="card" style="display:none;">
                 <h3>সাইবার ক্রাইম ডাটাবেস</h3>
                 <input type="text" id="crimeInput" placeholder="নাম / কেস আইডি / মোবাইল">
@@ -299,7 +294,7 @@
         }
     }
 
-    // OTP সিস্টেম
+    // OTP
     document.getElementById("requestOtpBtn").onclick = async () => {
         const mobile = document.getElementById("mobileNumber").value.trim();
         if (!/^01\d{9}$/.test(mobile)) {
@@ -361,11 +356,7 @@
         if (target) target.style.display = 'block';
     }
 
-    function startLiveTracking() {
-        document.getElementById("liveResult").style.display = "block";
-    }
-
-    // সব সার্চ সার্ভিস (লাইভ ছাড়া)
+    // সব সার্চে ব্যালেন্স চেক (লাইভ সহ)
     function searchService(type) {
         showLoading("ব্যালেন্স চেক করা হচ্ছে...");
         setTimeout(() => {
@@ -391,7 +382,7 @@
         }, 2500);
     }
 
-    // প্রোফাইল মোডাল
+    // প্রোফাইল (এবার সঠিকভাবে কাজ করবে)
     function showProfile() {
         if (!currentUser) return;
         const info = document.getElementById("profileInfo");
