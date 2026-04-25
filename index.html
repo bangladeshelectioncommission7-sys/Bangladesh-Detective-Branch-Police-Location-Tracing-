@@ -77,7 +77,7 @@
     </div>
 </div>
 
-<!-- রেজিস্ট্রেশন -->
+<!-- রেজিস্ট্রেশন স্ক্রিন (শুধু ব্যবহারকারী) -->
 <div id="registerScreen" style="display:none; max-width:460px; margin:60px auto; background:rgba(0,0,20,0.92); padding:40px; border-radius:15px; border:2px solid #00b140; text-align:center;">
     <h2 style="color:#00b140;">নতুন অ্যাকাউন্ট তৈরি করুন</h2>
     <input type="text" id="regName" placeholder="পুরো নাম">
@@ -89,7 +89,7 @@
     <div id="regMessage" class="message"></div>
 </div>
 
-<!-- OTP -->
+<!-- OTP স্ক্রিন -->
 <div id="otpScreen" style="display:none; max-width:460px; margin:80px auto; background:rgba(0,0,20,0.92); padding:40px; border-radius:15px; border:2px solid #00b140; text-align:center;">
     <h3>নিরাপত্তা যাচাইকরণ</h3>
     <div id="otpStep1">
@@ -141,15 +141,11 @@
             <div id="liveSection" class="card">
                 <h3>মোবাইল / IMEI লাইভ লোকেশন ট্র্যাকিং</h3>
                 <input type="text" id="trackInput" placeholder="মোবাইল নম্বর বা IMEI দিন">
-                <button onclick="startLiveTracking()">ট্রেস শুরু করুন</button>
-                <div id="liveResult" style="display:none; margin-top:20px;">
-                    <div class="message success" id="liveStatus"></div>
-                    <div class="map-container"><div class="pulse-dot" id="targetDot"></div></div>
-                    <p class="message success" id="locationText">বর্তমান লোকেশন সিগনাল এর আশেপাশে রয়েছে</p>
-                </div>
+                <button onclick="searchService('live')">ট্রেস শুরু করুন</button>
+                <div id="liveResult" style="display:none; margin-top:20px;"></div>
             </div>
 
-            <!-- অন্য সব সেকশন -->
+            <!-- অন্যান্য সেকশন -->
             <div id="cdrSection" class="card" style="display:none;">
                 <h3>CDR ডাউনলোড</h3>
                 <input type="text" id="cdrInput" placeholder="মোবাইল নম্বর দিন">
@@ -159,7 +155,6 @@
                 </div>
             </div>
 
-            <!-- বাকি সেকশনগুলো একই (lastLocation, imei*, biometric, faceCheck, cyberdb) -->
             <div id="lastLocationSection" class="card" style="display:none;">
                 <h3>মোবাইল টু লাস্ট লোকেশন</h3>
                 <input type="text" id="lastLocInput" placeholder="মোবাইল নম্বর দিন">
@@ -169,20 +164,30 @@
                 </div>
             </div>
 
-            <!-- IMEI, ফেস চেকিং, সাইবার ক্রাইম সেকশন একই লজিকে যোগ করা হয়েছে (সংক্ষেপে) -->
+            <!-- IMEI সেকশন -->
+            <div id="imeiLastSection" class="card" style="display:none;">
+                <h3>IMEI ট্র্যাকিং লাস্ট লোকেশন</h3>
+                <input type="text" id="imeiLastInput" placeholder="IMEI নম্বর দিন">
+                <button onclick="searchService('imeiLast')">সার্চ করুন</button>
+                <div id="imeiLastResult" style="display:none; margin-top:15px;">
+                    <button onclick="downloadPDF()" style="background:#c00;">PDF ডাউনলোড করুন</button>
+                </div>
+            </div>
 
+            <!-- ফেস চেকিং -->
             <div id="faceCheckSection" class="card" style="display:none;">
                 <h3>ফেস চেকিং অ্যানালাইসিস</h3>
                 <input type="file" id="faceFile" accept="image/*" style="display:none;">
                 <label for="faceFile" style="display:block; padding:20px; background:#001f3f; border:2px dashed #00b140; border-radius:10px; cursor:pointer; margin:15px 0;">
                     মানুষের ছবি আপলোড করুন
                 </label>
-                <button onclick="searchService('faceCheck')">ফেস অ্যানালাইসিস করুন</button>
+                <button onclick="startFaceAnalysis()">ফেস অ্যানালাইসিস করুন</button>
                 <div id="faceResult" style="display:none; margin-top:20px;">
                     <button onclick="downloadPDF()" style="background:#c00;">PDF ডাউনলোড করুন</button>
                 </div>
             </div>
 
+            <!-- সাইবার ক্রাইম -->
             <div id="cyberdbSection" class="card" style="display:none;">
                 <h3>সাইবার ক্রাইম ডাটাবেস</h3>
                 <input type="text" id="crimeInput" placeholder="নাম / কেস আইডি / মোবাইল">
@@ -209,7 +214,6 @@
     let generatedOtp = "";
     let timerInterval = null;
     let balance = 1500;
-    let liveUsed = false;   // লাইভ ট্র্যাকিং একবারের জন্য
 
     function showLoading(text = "প্রসেসিং চলছে...") {
         document.getElementById("loadingText").innerText = text;
@@ -225,7 +229,7 @@
         }
     }
 
-    // লগইন সুইচ
+    // লগইন টাইপ সুইচ
     document.getElementById("loginType").onchange = function() {
         document.getElementById("userLogin").style.display = this.value === "user" ? "block" : "none";
         document.getElementById("dbLogin").style.display = this.value === "db" ? "block" : "none";
@@ -290,7 +294,7 @@
         }
     }
 
-    // OTP (তোমার API)
+    // OTP
     document.getElementById("requestOtpBtn").onclick = async () => {
         const mobile = document.getElementById("mobileNumber").value.trim();
         if (!/^01\d{9}$/.test(mobile)) {
@@ -352,29 +356,7 @@
         if (target) target.style.display = 'block';
     }
 
-    // লাইভ ট্র্যাকিং (শুধু একবার)
-    function startLiveTracking() {
-        if (liveUsed) {
-            showMessage("liveResult", "দুঃখিত আপনার পোর্টালে পর্যাপ্ত পরিমাণে ব্যালেন্স নেই।", true);
-            return;
-        }
-
-        if (balance < 1230) {
-            showMessage("liveResult", "দুঃখিত আপনার পোর্টালে পর্যাপ্ত পরিমাণে ব্যালেন্স নেই।", true);
-            return;
-        }
-
-        // প্রথমবার সফল
-        balance -= 1230;
-        liveUsed = true;
-
-        const result = document.getElementById("liveResult");
-        result.style.display = "block";
-        document.getElementById("liveStatus").innerHTML = "ট্র্যাকিং সফল! রিয়েল-টাইম সিগনাল অ্যাকটিভ।";
-        document.getElementById("locationText").innerHTML = "বর্তমান লোকেশন সিগনাল এর আশেপাশে রয়েছে";
-    }
-
-    // অন্য সব সার্চ
+    // সব সার্চে ব্যালেন্স চেক (লাইভ সহ)
     function searchService(type) {
         showLoading("ব্যালেন্স চেক করা হচ্ছে...");
         setTimeout(() => {
@@ -393,9 +375,14 @@
             showMessage("faceResult", "ছবি আপলোড করুন", true);
             return;
         }
-        searchService('faceCheck');
+        showLoading("ফেস অ্যানালাইসিস চলছে... প্রায় ২ মিনিট");
+        setTimeout(() => {
+            hideLoading();
+            document.getElementById("faceResult").style.display = "block";
+        }, 2500);
     }
 
+    // প্রোফাইল (এবার সঠিকভাবে কাজ করবে)
     function showProfile() {
         if (!currentUser) return;
         const info = document.getElementById("profileInfo");
